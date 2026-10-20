@@ -3,4 +3,7 @@
     <File Path="mcp.json" />
   </Folder>
   <Project Path="PawHaven.API/PawHaven.API.csproj" />
+  <Project Path="PawHaven.Application/PawHaven.Application.csproj" />
+  <Project Path="PawHaven.Domain/PawHaven.Domain.csproj" />
+  <Project Path="PawHaven.Infrastructure/PawHaven.Infrastructure.csproj" />
 </Solution>
