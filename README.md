@@ -156,7 +156,7 @@ PawHaven/
 | **Infrastructure** | Application | Data access, repository implementations, external integrations |
 | **Domain** | Nothing | Core business entities, rules, and models |
 
-**Key Rule:** Dependencies flow **upward only**. A lower layer never references an upper layer.
+**Key Rule:** Dependencies flow **downward only**. A lower layer never references an upper layer.
 
 ## Architecture Conventions
 
