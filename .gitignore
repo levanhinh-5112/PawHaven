@@ -6,6 +6,14 @@
 # dotenv files
 .env
 
+# Development-specific configuration
+appsettings.Development.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
 # User-specific files
 *.rsuser
 *.suo
