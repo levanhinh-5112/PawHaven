@@ -63,7 +63,7 @@ Once the API is running, you can access:
   - Interactive interface to test all endpoints
   - View request/response schemas
 
-- **Health Check**: `https://localhost:5001/health`
+- **Health Check**: `https://localhost:5001/api/v1/health`
   - Confirms the API is running and healthy
   - Returns `200 OK` with a status message
 
