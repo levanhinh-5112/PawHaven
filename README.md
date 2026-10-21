@@ -53,17 +53,17 @@ cd PawHaven.API
 dotnet run
 ```
 
-The API will start and output the local URLs where it's running (typically `https://localhost:5001` or `http://localhost:5000`).
+The API will start and output the local URLs where it's running (typically `https://localhost:7005` or `http://localhost:5241`).
 
 ### 4. Access the API
 
 Once the API is running, you can access:
 
-- **Swagger UI** (API Explorer): `https://localhost:5001/swagger/index.html`
+- **Swagger UI** (API Explorer): `https://localhost:7005/swagger/index.html`
   - Interactive interface to test all endpoints
   - View request/response schemas
 
-- **Health Check**: `https://localhost:5001/api/v1/health`
+- **Health Check**: `https://localhost:7005/api/v1/health`
   - Confirms the API is running and healthy
   - Returns `200 OK` with a status message
 
