@@ -6,7 +6,7 @@
 ## Pull Request Guidelines
 
 ### PR Title Format
-`feat|fix|chore|refactor|docs: [TICKET-ID] Short description`
+`feat|fix|chore|refactor|docs: TICKET-ID Short description`
 
 Examples:
 - `feat: PAW-12 Add placeholder IPetRepository and register in DI`
