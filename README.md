@@ -114,9 +114,9 @@ PawHaven/
 │   └── (Database contexts, external APIs, persistence)
 │
 └── PawHaven.API/                 # Web API layer (depends on Application & Infrastructure)
-	├── Program.cs                # Dependency injection configuration & startup
-	├── Controllers/              # API endpoints
-	└── (Middleware, filters, API configuration)
+    ├── Program.cs                # Dependency injection configuration & startup
+    ├── Controllers/              # API endpoints
+    └── (Middleware, filters, API configuration)
 ```
 
 ## Architecture Overview
