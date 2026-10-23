@@ -20,7 +20,8 @@ public static class InfrastructureServiceExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? "Server=localhost,1433;Database=PawHavenDb;User Id=sa;Password=PawHaven@123;TrustServerCertificate=True;Encrypt=True;";
+            ?? throw new InvalidOperationException(
+                "Connection string 'DefaultConnection' was not found. Set it in appsettings or user secrets.");
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
