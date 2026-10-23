@@ -44,7 +44,7 @@ dotnet list package
 Ensure Docker Desktop is running, then execute:
 
 ```powershell
-cd D:\Study\.net identity\PawHaven
+cd path\to\PawHaven   # repository root containing docker-compose.yml
 docker compose up -d
 ```
 
