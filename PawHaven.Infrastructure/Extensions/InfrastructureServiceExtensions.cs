@@ -16,6 +16,7 @@ public static class InfrastructureServiceExtensions
     /// Adds Infrastructure layer services to the dependency injection container.
     /// </summary>
     /// <param name="services">The service collection to register services in.</param>
+    /// <param name="configuration">The application configuration used to resolve the database connection string.</param>
     /// <returns>The service collection for method chaining.</returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
