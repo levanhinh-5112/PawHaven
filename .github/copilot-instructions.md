@@ -2,6 +2,7 @@
 
 ## Project Guidelines
 - Create/switch to the task-specific feature branch before implementing ticket changes.
+- Review modified files before any commit, push, or pull request creation. Always pause and ask for approval before git operations.
 
 ## Pull Request Guidelines
 
@@ -101,4 +102,3 @@ Implemented the dependency injection wiring across all four layers (Domain → A
 
 ## Additional Notes
 This is a foundation layer that establishes the DI pattern for future feature development. The placeholder repository will be replaced with real database operations in subsequent stories.
-```
