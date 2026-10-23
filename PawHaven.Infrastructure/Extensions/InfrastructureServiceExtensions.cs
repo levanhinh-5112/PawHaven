@@ -20,9 +20,12 @@ public static class InfrastructureServiceExtensions
     /// <returns>The service collection for method chaining.</returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException(
-                "Connection string 'DefaultConnection' was not found. Set it in appsettings or user secrets.");
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            connectionString = "Server=localhost,1433;Database=PawHaven;User Id=sa;******;Encrypt=false;TrustServerCertificate=true;";
+        }
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
