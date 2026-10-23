@@ -2,6 +2,7 @@
 
 ## Project Guidelines
 - Create/switch to the task-specific feature branch before implementing ticket changes.
+- Review modified files before any commit, push, or pull request creation. Always pause and ask for approval before git operations.
 
 ## Pull Request Guidelines
 
