@@ -4,7 +4,7 @@ namespace PawHaven.Domain.Entities;
 
 public class Pet
 {
-    public int Id { get; private set; }
+    public int Id { get; set; }
     public string Name { get; private set; } = string.Empty;
     public Species Species { get; private set; }
     public string? Breed { get; private set; }

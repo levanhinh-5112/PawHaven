@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PawHaven.Domain.Entities;
+using PawHaven.Infrastructure.Persistence.Seed;
 
 namespace PawHaven.Infrastructure.Persistence.Configurations;
 
@@ -39,5 +40,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Property(pet => pet.CreatedAtUtc)
             .IsRequired();
+
+        builder.HasData(PetSeedData.Pets);
     }
 }
