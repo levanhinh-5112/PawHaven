@@ -60,6 +60,22 @@ public class Pet
         CreatedAtUtc = createdAtUtc ?? DateTime.UtcNow;
     }
 
+    public static Pet CreateSeed(
+        int id,
+        string name,
+        Species species,
+        string description,
+        int ageInMonths = 0,
+        PetStatus status = PetStatus.Available,
+        string? breed = null,
+        string? photoUrl = null,
+        DateTime? createdAtUtc = null)
+    {
+        var pet = new Pet(name, species, description, ageInMonths, status, breed, photoUrl, createdAtUtc);
+        pet.Id = id;
+        return pet;
+    }
+
     public void MarkAsAdopted()
     {
         Status = PetStatus.Adopted;
