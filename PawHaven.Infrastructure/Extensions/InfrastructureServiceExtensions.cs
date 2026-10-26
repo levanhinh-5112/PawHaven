@@ -12,6 +12,8 @@ namespace PawHaven.Infrastructure.Extensions;
 /// </summary>
 public static class InfrastructureServiceExtensions
 {
+    private const string DefaultConnectionName = "DefaultConnection";
+
     /// <summary>
     /// Adds Infrastructure layer services to the dependency injection container.
     /// </summary>
@@ -20,11 +22,12 @@ public static class InfrastructureServiceExtensions
     /// <returns>The service collection for method chaining.</returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString(DefaultConnectionName);
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            connectionString = "Server=localhost,1433;Database=PawHaven;User Id=sa;******;Encrypt=false;TrustServerCertificate=true;";
+            throw new InvalidOperationException(
+                $"Missing required connection string 'ConnectionStrings:{DefaultConnectionName}'. Configure it in appsettings, user secrets, or environment variables.");
         }
 
         services.AddDbContext<AppDbContext>(options =>
