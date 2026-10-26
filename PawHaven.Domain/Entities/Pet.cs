@@ -4,7 +4,7 @@ namespace PawHaven.Domain.Entities;
 
 public class Pet
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public Species Species { get; private set; }
     public string? Breed { get; private set; }
@@ -58,6 +58,22 @@ public class Pet
         Breed = breed;
         PhotoUrl = photoUrl;
         CreatedAtUtc = createdAtUtc ?? DateTime.UtcNow;
+    }
+
+    public static Pet CreateSeed(
+        int id,
+        string name,
+        Species species,
+        string description,
+        int ageInMonths = 0,
+        PetStatus status = PetStatus.Available,
+        string? breed = null,
+        string? photoUrl = null,
+        DateTime? createdAtUtc = null)
+    {
+        var pet = new Pet(name, species, description, ageInMonths, status, breed, photoUrl, createdAtUtc);
+        pet.Id = id;
+        return pet;
     }
 
     public void MarkAsAdopted()
