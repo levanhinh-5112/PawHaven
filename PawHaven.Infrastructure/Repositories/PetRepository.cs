@@ -1,11 +1,25 @@
 using PawHaven.Application.Abstractions;
+using PawHaven.Domain.Entities;
+using PawHaven.Infrastructure.Persistence;
 
 namespace PawHaven.Infrastructure.Repositories;
 
 /// <summary>
-/// Placeholder repository implementation for pets.
-/// This is a temporary implementation that will be replaced with real database operations.
+/// Repository implementation for pets using Entity Framework Core.
 /// </summary>
 internal class PetRepository : IPetRepository
 {
+    private readonly AppDbContext _context;
+
+    public PetRepository(AppDbContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
+
+    public async Task AddAsync(Pet pet, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(pet);
+
+        await _context.Pets.AddAsync(pet, cancellationToken);
+    }
 }
