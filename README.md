@@ -40,10 +40,10 @@ cd PawHaven
 The application uses SQL Server 2022 Express. Start the container:
 
 ```bash
-docker run -e "ACCEPT_EULA=Y" `
-  -e "SA_PASSWORD=PawHaven@123" `
-  -p 1433:1433 `
-  --name pawHavenDb `
+docker run -e "ACCEPT_EULA=Y" \
+  -e "SA_PASSWORD=PawHaven@123" \
+  -p 1433:1433 \
+  --name pawHavenDb \
   -d mcr.microsoft.com/mssql/server:2022-latest
 ```
 
