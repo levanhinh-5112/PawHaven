@@ -43,7 +43,13 @@ public class ValidationException : Exception
         var fieldName = exception.ParamName ?? "unknown";
         // Convert PascalCase to camelCase (e.g., "Name" -> "name", "PhotoUrl" -> "photoUrl")
         var camelCaseFieldName = ToCamelCase(fieldName);
-        return new ValidationException(camelCaseFieldName, exception.Message);
+        // ArgumentException.Message appends " (Parameter 'paramName')" when a paramName is provided.
+        // Strip that suffix so the API contract surfaces only the clean validation message.
+        var suffix = $" (Parameter '{exception.ParamName}')";
+        var cleanMessage = exception.Message.EndsWith(suffix)
+            ? exception.Message[..^suffix.Length]
+            : exception.Message;
+        return new ValidationException(camelCaseFieldName, cleanMessage);
     }
 
     /// <summary>
