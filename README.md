@@ -74,7 +74,7 @@ dotnet user-secrets list
 Create the database schema and seed data:
 
 ```bash
-dotnet ef database update --project PawHaven.Infrastructure
+dotnet ef database update --project PawHaven.Infrastructure --startup-project PawHaven.API
 ```
 
 This creates:
