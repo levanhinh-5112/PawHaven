@@ -35,7 +35,57 @@ git clone https://github.com/levanhinh-5112/PawHaven.git
 cd PawHaven
 ```
 
-### 2. Build the Solution
+### 2. Start SQL Server in Docker
+
+The application uses SQL Server 2022 Express. Start the container:
+
+```bash
+docker run -e "ACCEPT_EULA=Y" \
+  -e "MSSQL_PID=Express" \
+  -e "SA_PASSWORD=<your_strong_password>" \
+  -p 1433:1433 \
+  --name pawHavenDb \
+  -d mcr.microsoft.com/mssql/server:2022-latest
+```
+
+Verify the container is running:
+
+```bash
+docker ps | grep pawHavenDb
+```
+
+### 3. Configure User Secrets
+
+Store sensitive configuration locally without committing to source control:
+
+```bash
+cd PawHaven.API
+dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost,1433;Database=PawHavenDb;User Id=sa;Password=PawHaven@123;TrustServerCertificate=true;Encrypt=false;"
+```
+
+Verify secrets are set:
+
+```bash
+dotnet user-secrets list
+```
+
+### 4. Apply Database Migrations
+
+Create the database schema and seed data:
+
+```bash
+dotnet ef database update --project PawHaven.Infrastructure --startup-project PawHaven.API
+```
+
+This creates:
+- `PawHavenDb` database on SQL Server
+- `Pets`, `Users`, `AdoptionApplications` tables
+- 10 seed pets for development/testing
+- Unique index on `Users.Email`
+- Foreign key constraints with restrict delete behavior
+
+### 5. Build the Solution
 
 ```bash
 dotnet build
@@ -46,7 +96,7 @@ This command will:
 - Compile all four projects
 - Verify the build succeeds with no errors or warnings
 
-### 3. Run the API
+### 6. Run the API
 
 ```bash
 cd PawHaven.API
@@ -55,17 +105,77 @@ dotnet run
 
 The API will start and output the local URLs where it's running (typically `https://localhost:7005` or `http://localhost:5241`).
 
-### 4. Access the API
+### 7. Access the API
 
 Once the API is running, you can access:
 
-- **Swagger UI** (API Explorer): `https://localhost:7005/swagger/index.html`
+- **Swagger UI** (API Explorer): `https://localhost:7126/swagger/index.html`
   - Interactive interface to test all endpoints
   - View request/response schemas
 
-- **Health Check**: `https://localhost:7005/api/v1/health`
+- **Health Check**: `https://localhost:7126/api/v1/health`
   - Confirms the API is running and healthy
   - Returns `200 OK` with a status message
+
+## Database Management
+
+### Verify Database Setup
+
+Connect to SQL Server via SSMS or Azure Data Studio:
+- **Server**: `localhost,1433`
+- **Login**: `sa`
+- **Password**: `<your_strong_password>`
+
+Verify tables and seed data:
+
+```sql
+-- Check table existence
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES 
+WHERE TABLE_CATALOG = 'PawHavenDb' AND TABLE_TYPE = 'BASE TABLE'
+ORDER BY TABLE_NAME;
+
+-- Count seed pets
+SELECT COUNT(*) AS PetCount FROM Pets;
+
+-- View all seed pets
+SELECT Id, Name, Species, Status, Breed, CreatedAtUtc FROM Pets ORDER BY Id;
+
+-- Verify unique index on Users.Email
+SELECT * FROM sys.indexes 
+WHERE object_id = OBJECT_ID('Users') AND name LIKE '%Email%';
+
+-- Verify foreign key constraints
+SELECT name, referenced_object_name, delete_referential_action_desc 
+FROM sys.foreign_keys 
+WHERE parent_object_id = OBJECT_ID('AdoptionApplications');
+```
+
+### Entity Framework Core Commands
+
+Add a new migration:
+
+```bash
+dotnet ef migrations add MigrationName --project PawHaven.Infrastructure
+```
+
+Remove the latest unapplied migration:
+
+```bash
+dotnet ef migrations remove --project PawHaven.Infrastructure
+```
+
+Update database to latest migration:
+
+```bash
+dotnet ef database update --project PawHaven.Infrastructure
+```
+
+Reset database (development only):
+
+```bash
+dotnet ef database drop --project PawHaven.Infrastructure
+dotnet ef database update --project PawHaven.Infrastructure
+```
 
 ## Running the API
 
