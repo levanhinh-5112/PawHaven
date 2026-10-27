@@ -42,7 +42,7 @@ The application uses SQL Server 2022 Express. Start the container:
 ```bash
 docker run -e "ACCEPT_EULA=Y" \
   -e "MSSQL_PID=Express" \
-  -e "SA_PASSWORD=PawHaven@123" \
+  -e "SA_PASSWORD=<your_strong_password>" \
   -p 1433:1433 \
   --name pawHavenDb \
   -d mcr.microsoft.com/mssql/server:2022-latest
@@ -124,7 +124,7 @@ Once the API is running, you can access:
 Connect to SQL Server via SSMS or Azure Data Studio:
 - **Server**: `localhost,1433`
 - **Login**: `sa`
-- **Password**: `PawHaven@123`
+- **Password**: `<your_strong_password>`
 
 Verify tables and seed data:
 
