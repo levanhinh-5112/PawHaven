@@ -102,7 +102,7 @@ cd PawHaven.API
 dotnet run
 ```
 
-The API will start and output the local URLs where it's running (typically `https://localhost:7126`).
+The API will start and output the local URLs where it's running (typically `https://localhost:7005` or `http://localhost:5241`).
 
 ### 7. Access the API
 
