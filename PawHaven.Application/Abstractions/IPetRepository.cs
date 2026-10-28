@@ -1,3 +1,4 @@
+using PawHaven.Application.DTOs;
 using PawHaven.Domain.Entities;
 
 namespace PawHaven.Application.Abstractions;
@@ -23,4 +24,15 @@ public interface IPetRepository
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The pet if found; otherwise null.</returns>
     Task<Pet?> GetByIdAsync(int petId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves a paginated list of pets with optional filtering and sorting.
+    /// </summary>
+    /// <param name="filter">The filter object containing optional status/species filters and sort parameters.</param>
+    /// <param name="page">The page number (1-based).</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A PagedResult containing pets and pagination metadata.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when filter is null.</exception>
+    Task<PagedResult<Pet>> ListAsync(ListPetsQueryFilter filter, int page, int pageSize, CancellationToken cancellationToken = default);
 }
