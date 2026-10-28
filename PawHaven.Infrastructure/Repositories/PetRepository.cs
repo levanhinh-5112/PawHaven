@@ -26,6 +26,6 @@ internal class PetRepository : IPetRepository
 
     public async Task<Pet?> GetByIdAsync(int petId, CancellationToken cancellationToken = default)
     {
-        return await _context.Pets.FirstOrDefaultAsync(p => p.Id == petId, cancellationToken);
+        return await _context.Pets.AsNoTracking().FirstOrDefaultAsync(p => p.Id == petId, cancellationToken);
     }
 }
