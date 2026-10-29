@@ -22,10 +22,17 @@ public static class ApplicationServiceExtensions
         // Register all validators from the Application assembly
         services.AddValidatorsFromAssembly(assembly);
 
-        // Register all command handlers (ICommandHandler<,>)
+        // Register all command handlers that return a result (ICommandHandler<,>)
         services.Scan(scan => scan
             .FromAssemblies(assembly)
             .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
+        // Register all command handlers without a result (ICommandHandler<>)
+        services.Scan(scan => scan
+            .FromAssemblies(assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
             .AsImplementedInterfaces()
             .WithTransientLifetime());
 
