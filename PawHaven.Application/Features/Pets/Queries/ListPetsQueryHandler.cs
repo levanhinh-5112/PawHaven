@@ -2,6 +2,7 @@ using PawHaven.Application.Abstractions;
 using PawHaven.Application.Abstractions.Handlers;
 using PawHaven.Application.DTOs;
 using PawHaven.Application.DTOs.Extensions;
+using PawHaven.Application.Exceptions;
 
 namespace PawHaven.Application.Features.Pets.Queries;
 
@@ -34,8 +35,15 @@ public class ListPetsQueryHandler : IQueryHandler<ListPetsQuery, PagedResult<Pet
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        // Validate query parameters
-        query.Validate();
+        try
+        {
+            // Validate query parameters
+            query.Validate();
+        }
+        catch (ArgumentException ex)
+        {
+            throw ValidationException.FromArgumentException(ex);
+        }
 
         // Convert query to filter object
         var filter = ListPetsQueryFilter.FromQuery(query);
