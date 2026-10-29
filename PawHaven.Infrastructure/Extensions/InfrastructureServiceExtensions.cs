@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PawHaven.Application.Abstractions;
 using PawHaven.Infrastructure.Persistence;
 using PawHaven.Infrastructure.Repositories;
+using PawHaven.Infrastructure.UnitOfWork;
 
 namespace PawHaven.Infrastructure.Extensions;
 
@@ -34,6 +35,7 @@ public static class InfrastructureServiceExtensions
             options.UseSqlServer(connectionString));
 
         services.AddScoped<IPetRepository, PetRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
         return services;
     }
 }
