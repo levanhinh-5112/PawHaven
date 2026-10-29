@@ -56,12 +56,12 @@ internal class PetRepository : IPetRepository
 
         query = sortBy switch
         {
-            "name" => isAscending ? query.OrderBy(p => p.Name) : query.OrderByDescending(p => p.Name),
-            "species" => isAscending ? query.OrderBy(p => p.Species) : query.OrderByDescending(p => p.Species),
-            "age" => isAscending ? query.OrderBy(p => p.AgeInMonths) : query.OrderByDescending(p => p.AgeInMonths),
-            "status" => isAscending ? query.OrderBy(p => p.Status) : query.OrderByDescending(p => p.Status),
-            "created" => isAscending ? query.OrderBy(p => p.CreatedAtUtc) : query.OrderByDescending(p => p.CreatedAtUtc),
-            _ => query.OrderByDescending(p => p.CreatedAtUtc) // Default to created descending
+            "name" => isAscending ? query.OrderBy(p => p.Name).ThenBy(p => p.Id) : query.OrderByDescending(p => p.Name).ThenBy(p => p.Id),
+            "species" => isAscending ? query.OrderBy(p => p.Species).ThenBy(p => p.Id) : query.OrderByDescending(p => p.Species).ThenBy(p => p.Id),
+            "age" => isAscending ? query.OrderBy(p => p.AgeInMonths).ThenBy(p => p.Id) : query.OrderByDescending(p => p.AgeInMonths).ThenBy(p => p.Id),
+            "status" => isAscending ? query.OrderBy(p => p.Status).ThenBy(p => p.Id) : query.OrderByDescending(p => p.Status).ThenBy(p => p.Id),
+            "created" => isAscending ? query.OrderBy(p => p.CreatedAtUtc).ThenBy(p => p.Id) : query.OrderByDescending(p => p.CreatedAtUtc).ThenBy(p => p.Id),
+            _ => query.OrderByDescending(p => p.CreatedAtUtc).ThenBy(p => p.Id) // Default to created descending
         };
 
         // Calculate offset for pagination
