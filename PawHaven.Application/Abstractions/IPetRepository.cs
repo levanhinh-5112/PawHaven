@@ -26,6 +26,14 @@ public interface IPetRepository
     Task<Pet?> GetByIdAsync(int petId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Retrieves a tracked pet by its ID for update operations.
+    /// </summary>
+    /// <param name="petId">The ID of the pet to retrieve.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The pet if found; otherwise null.</returns>
+    Task<Pet?> GetByIdForUpdateAsync(int petId, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Retrieves a paginated list of pets with optional filtering and sorting.
     /// </summary>
     /// <param name="filter">The filter object containing optional status/species filters and sort parameters.</param>
@@ -35,4 +43,12 @@ public interface IPetRepository
     /// <returns>A PagedResult containing pets and pagination metadata.</returns>
     /// <exception cref="ArgumentNullException">Thrown when filter is null.</exception>
     Task<PagedResult<Pet>> ListAsync(ListPetsQueryFilter filter, int page, int pageSize, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes a pet by its ID.
+    /// </summary>
+    /// <param name="petId">The ID of the pet to delete.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task<bool> DeleteAsync(int petId, CancellationToken cancellationToken = default);
 }

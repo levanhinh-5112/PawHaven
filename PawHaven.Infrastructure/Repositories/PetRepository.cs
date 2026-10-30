@@ -30,6 +30,11 @@ internal class PetRepository : IPetRepository
         return await _context.Pets.AsNoTracking().FirstOrDefaultAsync(p => p.Id == petId, cancellationToken);
     }
 
+    public async Task<Pet?> GetByIdForUpdateAsync(int petId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Pets.FirstOrDefaultAsync(p => p.Id == petId, cancellationToken);
+    }
+
     public async Task<PagedResult<Pet>> ListAsync(ListPetsQueryFilter filter, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(filter);
@@ -78,5 +83,17 @@ internal class PetRepository : IPetRepository
 
         // Return paginated result using constructor
         return new PagedResult<Pet>(items, page, pageSize, totalCount);
+    }
+
+    public async Task<bool> DeleteAsync(int petId, CancellationToken cancellationToken = default)
+    {
+        var pet = await _context.Pets.FirstOrDefaultAsync(p => p.Id == petId, cancellationToken);
+        if (pet is null)
+        {
+            return false;
+        }
+
+        _context.Pets.Remove(pet);
+        return true;
     }
 }
