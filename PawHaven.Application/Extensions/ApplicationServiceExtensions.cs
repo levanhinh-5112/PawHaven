@@ -1,4 +1,6 @@
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using PawHaven.Application.Abstractions.Handlers;
 
 namespace PawHaven.Application.Extensions;
 
@@ -9,13 +11,38 @@ public static class ApplicationServiceExtensions
 {
     /// <summary>
     /// Adds Application layer services to the dependency injection container.
+    /// Automatically registers all validators and CQRS handlers via assembly scanning.
     /// </summary>
     /// <param name="services">The service collection to register services in.</param>
     /// <returns>The service collection for method chaining.</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        // Application layer services are registered here
-        // Currently empty as placeholder; future handlers and services will be added here
+        var assembly = typeof(ApplicationServiceExtensions).Assembly;
+
+        // Register all validators from the Application assembly
+        services.AddValidatorsFromAssembly(assembly);
+
+        // Register all command handlers that return a result (ICommandHandler<,>)
+        services.Scan(scan => scan
+            .FromAssemblies(assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
+        // Register all command handlers without a result (ICommandHandler<>)
+        services.Scan(scan => scan
+            .FromAssemblies(assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
+        // Register all query handlers (IQueryHandler<,>)
+        services.Scan(scan => scan
+            .FromAssemblies(assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
         return services;
     }
 }
