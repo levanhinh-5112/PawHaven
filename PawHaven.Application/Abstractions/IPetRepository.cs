@@ -35,4 +35,12 @@ public interface IPetRepository
     /// <returns>A PagedResult containing pets and pagination metadata.</returns>
     /// <exception cref="ArgumentNullException">Thrown when filter is null.</exception>
     Task<PagedResult<Pet>> ListAsync(ListPetsQueryFilter filter, int page, int pageSize, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes a pet by its ID.
+    /// </summary>
+    /// <param name="petId">The ID of the pet to delete.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task<bool> DeleteAsync(int petId, CancellationToken cancellationToken = default);
 }

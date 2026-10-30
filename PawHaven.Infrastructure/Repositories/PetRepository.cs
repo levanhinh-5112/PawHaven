@@ -79,4 +79,16 @@ internal class PetRepository : IPetRepository
         // Return paginated result using constructor
         return new PagedResult<Pet>(items, page, pageSize, totalCount);
     }
+
+    public async Task<bool> DeleteAsync(int petId, CancellationToken cancellationToken = default)
+    {
+        var pet = await _context.Pets.FirstOrDefaultAsync(p => p.Id == petId, cancellationToken);
+        if (pet is null)
+        {
+            return false;
+        }
+
+        _context.Pets.Remove(pet);
+        return true;
+    }
 }
