@@ -30,6 +30,11 @@ internal class PetRepository : IPetRepository
         return await _context.Pets.AsNoTracking().FirstOrDefaultAsync(p => p.Id == petId, cancellationToken);
     }
 
+    public async Task<Pet?> GetByIdForUpdateAsync(int petId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Pets.FirstOrDefaultAsync(p => p.Id == petId, cancellationToken);
+    }
+
     public async Task<PagedResult<Pet>> ListAsync(ListPetsQueryFilter filter, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(filter);

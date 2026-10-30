@@ -25,8 +25,8 @@ public class UpdatePetCommandHandler : ICommandHandler<UpdatePetCommand, PetDto>
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        // Retrieve existing pet
-        var pet = await _petRepository.GetByIdAsync(command.Id, cancellationToken);
+        // Retrieve existing tracked pet for update
+        var pet = await _petRepository.GetByIdForUpdateAsync(command.Id, cancellationToken);
         if (pet is null)
         {
             throw new NotFoundException($"Pet with ID {command.Id} not found.");

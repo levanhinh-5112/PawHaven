@@ -26,6 +26,14 @@ public interface IPetRepository
     Task<Pet?> GetByIdAsync(int petId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Retrieves a tracked pet by its ID for update operations.
+    /// </summary>
+    /// <param name="petId">The ID of the pet to retrieve.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The pet if found; otherwise null.</returns>
+    Task<Pet?> GetByIdForUpdateAsync(int petId, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Retrieves a paginated list of pets with optional filtering and sorting.
     /// </summary>
     /// <param name="filter">The filter object containing optional status/species filters and sort parameters.</param>
