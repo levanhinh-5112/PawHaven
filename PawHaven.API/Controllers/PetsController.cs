@@ -104,18 +104,24 @@ public class PetsController : ControllerBase
         [FromQuery] string? sortDirection = null,
         CancellationToken cancellationToken = default)
     {
-        // Parse optional enums from string query parameters
-        PetStatus? parsedStatus = null;
-        if (!string.IsNullOrEmpty(status) && Enum.TryParse<PetStatus>(status, ignoreCase: true, out var parsedStatusValue))
+        // Parse optional enums from string query parameters.
+        if (!string.IsNullOrWhiteSpace(status) && !Enum.TryParse<PetStatus>(status, ignoreCase: true, out var parsedStatusValue))
         {
-            parsedStatus = parsedStatusValue;
+            return BadRequest($"Invalid status value '{status}'.");
         }
 
-        Species? parsedSpecies = null;
-        if (!string.IsNullOrEmpty(species) && Enum.TryParse<Species>(species, ignoreCase: true, out var parsedSpeciesValue))
+        PetStatus? parsedStatus = string.IsNullOrWhiteSpace(status)
+            ? null
+            : Enum.Parse<PetStatus>(status, ignoreCase: true);
+
+        if (!string.IsNullOrWhiteSpace(species) && !Enum.TryParse<Species>(species, ignoreCase: true, out var parsedSpeciesValue))
         {
-            parsedSpecies = parsedSpeciesValue;
+            return BadRequest($"Invalid species value '{species}'.");
         }
+
+        Species? parsedSpecies = string.IsNullOrWhiteSpace(species)
+            ? null
+            : Enum.Parse<Species>(species, ignoreCase: true);
 
         var query = new ListPetsQuery(
             Page: page,
