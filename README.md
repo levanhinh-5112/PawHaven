@@ -520,7 +520,7 @@ Deletes a pet. Returns 204 No Content.
 
 **Errors:**
 - Pet ID not found → 404 ProblemDetails
-- Pet has pending adoption applications → 409 Conflict ProblemDetails with message
+- Pet has existing adoption applications → 409 Conflict ProblemDetails with message
 
 ---
 
