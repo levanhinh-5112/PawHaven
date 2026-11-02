@@ -83,6 +83,6 @@ public class ExceptionHandlingMiddleware
                 break;
         }
 
-        return context.Response.WriteAsJsonAsync(response);
+        return context.Response.WriteAsJsonAsync(response, options: null, contentType: "application/problem+json");
     }
 }
