@@ -625,17 +625,20 @@ namespace PawHaven.Application.Features.Pets.Commands;
 public class CreatePetCommandHandler : ICommandHandler<CreatePetCommand, PetDto>
 {
     private readonly IPetRepository _petRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CreatePetCommandHandler(IPetRepository petRepository)
+    public CreatePetCommandHandler(IPetRepository petRepository, IUnitOfWork unitOfWork)
     {
         _petRepository = petRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<PetDto> HandleAsync(CreatePetCommand command, CancellationToken cancellationToken)
     {
         // Business logic here
         var pet = new Pet(command.Name, command.Species, /* ... */);
-        await _petRepository.CreateAsync(pet, cancellationToken);
+        await _petRepository.AddAsync(pet, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return pet.ToPetDto();
     }
 }
