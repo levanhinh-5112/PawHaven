@@ -370,6 +370,308 @@ git push origin feature/PAW-XX-short-description
 
 Then create a Pull Request on GitHub with a detailed body (see `.github/copilot-instructions.md` for PR template).
 
+## API Endpoints
+
+### Overview
+
+All endpoints are prefixed with `/api/pets` and return standard JSON responses. Error responses follow the RFC 7807 ProblemDetails format with appropriate HTTP status codes.
+
+### Pets Endpoints
+
+#### List Pets
+**GET** `/api/pets`
+
+Returns a paginated list of pets with optional filtering and sorting.
+
+**Query Parameters:**
+- `page` (int, default: 1) - Page number (1-based)
+- `pageSize` (int, default: 10) - Items per page
+- `status` (string, optional) - Filter by pet status (Available, Adopted, Reserved)
+- `species` (string, optional) - Filter by species (Dog, Cat, Rabbit, etc.)
+- `sortBy` (string, default: created) - Sort field (name, species, age, status, created)
+- `sortDirection` (string, default: desc) - Sort order (asc, desc)
+
+**Response (200 OK):**
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "name": "Buddy",
+      "species": "Dog",
+      "breed": "Golden Retriever",
+      "ageInMonths": 24,
+      "status": "Available",
+      "description": "Friendly and energetic",
+      "photoUrl": "https://example.com/buddy.jpg",
+      "createdAtUtc": "2026-10-01T10:00:00Z"
+    }
+  ],
+  "page": 1,
+  "pageSize": 10,
+  "totalCount": 7,
+  "totalPages": 1,
+  "hasNextPage": false,
+  "hasPreviousPage": false
+}
+```
+
+**Error (400 Bad Request):**
+- Invalid `page` (e.g., 0) → 400 with validation errors
+- `pageSize` exceeds maximum → 400 with validation errors
+- Unknown `sortBy` field → 400 with validation errors
+
+---
+
+#### Get Pet by ID
+**GET** `/api/pets/{id}`
+
+Retrieves a single pet by ID.
+
+**Path Parameters:**
+- `id` (int, required) - Pet ID
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "name": "Buddy",
+  "species": "Dog",
+  "status": "Available",
+  "breed": "Golden Retriever",
+  "ageInMonths": 24,
+  "photoUrl": "https://example.com/buddy.jpg",
+  "createdAtUtc": "2026-10-01T10:00:00Z"
+}
+```
+
+**Error (404 Not Found):**
+- Pet with given ID does not exist → 404 ProblemDetails
+
+---
+
+#### Create Pet
+**POST** `/api/pets`
+
+Creates a new pet. Returns 201 with Location header pointing to the new pet resource.
+
+**Request Body:**
+```json
+{
+  "name": "Max",
+  "species": "Dog",
+  "breed": "Labrador",
+  "ageInMonths": 12,
+  "description": "Friendly and energetic",
+  "photoUrl": "https://example.com/max.jpg"
+}
+```
+
+**Response (201 Created):**
+- Location header: `/api/pets/{newPetId}`
+- Response body: Created pet object (same structure as Get by ID)
+
+**Errors (400 Bad Request):**
+- Empty `name` → 400 with field error: "Pet name cannot be empty."
+- Negative `ageInMonths` → 400 with field error
+- Invalid `photoUrl` format → 400 with field error
+
+---
+
+#### Update Pet
+**PUT** `/api/pets/{id}`
+
+Updates an existing pet (except status). Returns 204 No Content.
+
+**Path Parameters:**
+- `id` (int, required) - Pet ID
+
+**Request Body:**
+```json
+{
+  "name": "Max Updated",
+  "species": "Dog",
+  "breed": "Labrador Mix",
+  "ageInMonths": 13,
+  "description": "Still friendly",
+  "photoUrl": "https://example.com/max-updated.jpg"
+}
+```
+
+**Response (204 No Content):**
+- No response body; status remains unchanged
+
+**Errors:**
+- Pet ID not found → 404 ProblemDetails
+- Invalid field (empty name, negative age, etc.) → 400 ProblemDetails with errors dictionary
+
+---
+
+#### Delete Pet
+**DELETE** `/api/pets/{id}`
+
+Deletes a pet. Returns 204 No Content.
+
+**Path Parameters:**
+- `id` (int, required) - Pet ID
+
+**Response (204 No Content):**
+- No response body
+
+**Errors:**
+- Pet ID not found → 404 ProblemDetails
+- Pet has existing adoption applications → 409 Conflict ProblemDetails with message
+
+---
+
+### Response Format
+
+#### Success Response
+All endpoints return responses in JSON format with appropriate HTTP status codes (200, 201, 204).
+
+#### Error Response (ProblemDetails - RFC 7807)
+```json
+{
+  "type": "https://api.example.com/errors/validation",
+  "title": "One or more validation errors occurred.",
+  "status": 400,
+  "detail": "The request contains invalid data.",
+  "errors": {
+    "name": ["Pet name cannot be empty."],
+    "ageInMonths": ["Age must be greater than or equal to 0."]
+  }
+}
+```
+
+**Common Status Codes:**
+- `200 OK` - Successful GET request
+- `201 Created` - Successful POST request with Location header
+- `204 No Content` - Successful PUT/DELETE request
+- `400 Bad Request` - Validation errors (with `errors` dictionary)
+- `404 Not Found` - Resource not found
+- `409 Conflict` - Business logic conflict (e.g., cannot delete pet with pending applications)
+- `500 Internal Server Error` - Unhandled exception
+
+---
+
+### Testing with Swagger
+
+1. Start the API: `dotnet run` from `PawHaven.API/`
+2. Open Swagger UI at: `http://localhost:5241/swagger/index.html`
+3. Click "Try it out" on any endpoint
+4. Enter parameters and click "Execute"
+5. View response status, headers, and body
+
+### Testing with curl
+
+#### List Pets (default)
+```bash
+curl -X GET "http://localhost:5241/api/pets" -H "accept: application/json"
+```
+
+#### List Pets (filter by species and sort)
+```bash
+curl -X GET "http://localhost:5241/api/pets?species=Dog&sortBy=name&sortDirection=asc" -H "accept: application/json"
+```
+
+#### Get Pet by ID
+```bash
+curl -X GET "http://localhost:5241/api/pets/1" -H "accept: application/json"
+```
+
+#### Create Pet
+```bash
+curl -X POST "http://localhost:5241/api/pets" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Buddy","species":"Dog","breed":"Golden","ageInMonths":24,"photoUrl":"https://example.com/buddy.jpg"}'
+```
+
+#### Update Pet
+```bash
+curl -X PUT "http://localhost:5241/api/pets/1" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Buddy Updated","species":"Dog","breed":"Golden Mix","ageInMonths":25,"photoUrl":"https://example.com/buddy.jpg"}'
+```
+
+#### Delete Pet
+```bash
+curl -X DELETE "http://localhost:5241/api/pets/1" -H "accept: application/json"
+```
+
+---
+
+### Adding a New Command or Query
+
+#### 1. Create the Command/Query Class
+In `PawHaven.Application/Features/Pets/Commands/` or `Queries/`:
+
+```csharp
+namespace PawHaven.Application.Features.Pets.Commands;
+
+public class CreatePetCommand
+{
+    public string Name { get; init; }
+    public string Species { get; init; }
+    // ... other properties
+}
+```
+
+#### 2. Create the Handler
+Implement the `ICommandHandler<T, TResult>` or `IQueryHandler<T, TResult>` interface:
+
+```csharp
+namespace PawHaven.Application.Features.Pets.Commands;
+
+public class CreatePetCommandHandler : ICommandHandler<CreatePetCommand, PetDto>
+{
+    private readonly IPetRepository _petRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public CreatePetCommandHandler(IPetRepository petRepository, IUnitOfWork unitOfWork)
+    {
+        _petRepository = petRepository;
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<PetDto> HandleAsync(CreatePetCommand command, CancellationToken cancellationToken)
+    {
+        // Business logic here
+        var pet = new Pet(command.Name, command.Species, /* ... */);
+        await _petRepository.AddAsync(pet, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        return pet.ToPetDto();
+    }
+}
+```
+
+#### 3. Register in DI
+Add to `PawHaven.Application.Extensions.ApplicationServiceExtensions.AddApplication()`:
+
+```csharp
+services.AddScoped<ICommandHandler<CreatePetCommand, PetDto>, CreatePetCommandHandler>();
+```
+
+#### 4. Create API Controller Endpoint
+Add method to `PawHaven.API.Controllers.PetsController`:
+
+```csharp
+[HttpPost]
+public async Task<ActionResult<PetDto>> CreatePet([FromBody] CreatePetRequest request, CancellationToken cancellationToken)
+{
+    var command = new CreatePetCommand(request.Name, request.Species, /* ... */);
+    var result = await _handler.HandleAsync(command, cancellationToken);
+    return CreatedAtAction(nameof(GetPetById), new { id = result.Id }, result);
+}
+```
+
+This follows the **CQRS pattern** where:
+- **Commands** modify data (Create, Update, Delete)
+- **Queries** retrieve data (List, Get)
+- Each has a dedicated handler that encapsulates business logic
+- Handlers are injected into controllers for loose coupling
+
+---
+
 ## Troubleshooting
 
 ### Build Errors
