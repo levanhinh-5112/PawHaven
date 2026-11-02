@@ -26,7 +26,15 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Unhandled exception processing {Method} {Path}", context.Request.Method, context.Request.Path);
+            if (exception is ValidationException or NotFoundException or ConflictException)
+            {
+                _logger.LogWarning(exception, "Handled application exception processing {Method} {Path}", context.Request.Method, context.Request.Path);
+            }
+            else
+            {
+                _logger.LogError(exception, "Unhandled exception processing {Method} {Path}", context.Request.Method, context.Request.Path);
+            }
+
             await HandleExceptionAsync(context, exception);
         }
     }
