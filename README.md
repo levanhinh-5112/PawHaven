@@ -394,22 +394,25 @@ Returns a paginated list of pets with optional filtering and sorting.
 **Response (200 OK):**
 ```json
 {
-  "data": [
+  "items": [
     {
       "id": 1,
       "name": "Buddy",
       "species": "Dog",
-      "status": "Available",
       "breed": "Golden Retriever",
       "ageInMonths": 24,
+      "status": "Available",
+      "description": "Friendly and energetic",
       "photoUrl": "https://example.com/buddy.jpg",
       "createdAtUtc": "2026-10-01T10:00:00Z"
     }
   ],
-  "pageNumber": 1,
+  "page": 1,
   "pageSize": 10,
   "totalCount": 7,
-  "itemCount": 7
+  "totalPages": 1,
+  "hasNextPage": false,
+  "hasPreviousPage": false
 }
 ```
 
