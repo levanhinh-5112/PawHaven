@@ -1,5 +1,6 @@
 using PawHaven.Application.Abstractions;
 using PawHaven.Application.DTOs;
+using PawHaven.Application.Exceptions;
 using PawHaven.Domain.Entities;
 using PawHaven.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -91,6 +92,16 @@ internal class PetRepository : IPetRepository
         if (pet is null)
         {
             return false;
+        }
+
+        // Prevent deleting a pet that has any existing adoption applications because the FK is restricted.
+        var hasExistingApplications = await _context.AdoptionApplications
+            .AnyAsync(app => app.PetId == petId, cancellationToken);
+
+        if (hasExistingApplications)
+        {
+            throw new ConflictException("Pet", petId,
+                $"Cannot delete pet with ID {petId} because it has existing adoption applications.");
         }
 
         _context.Pets.Remove(pet);
