@@ -2,7 +2,6 @@ using PawHaven.Application.Abstractions;
 using PawHaven.Application.DTOs;
 using PawHaven.Application.Exceptions;
 using PawHaven.Domain.Entities;
-using PawHaven.Domain.Enums;
 using PawHaven.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
