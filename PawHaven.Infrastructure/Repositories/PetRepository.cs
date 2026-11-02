@@ -1,6 +1,8 @@
 using PawHaven.Application.Abstractions;
 using PawHaven.Application.DTOs;
+using PawHaven.Application.Exceptions;
 using PawHaven.Domain.Entities;
+using PawHaven.Domain.Enums;
 using PawHaven.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -91,6 +93,16 @@ internal class PetRepository : IPetRepository
         if (pet is null)
         {
             return false;
+        }
+
+        // Check for pending applications
+        var hasPendingApplications = await _context.AdoptionApplications
+            .AnyAsync(app => app.PetId == petId && app.Status == ApplicationStatus.Pending, cancellationToken);
+
+        if (hasPendingApplications)
+        {
+            throw new ConflictException("Pet", petId, 
+                $"Cannot delete pet with ID {petId} because it has pending adoption applications.");
         }
 
         _context.Pets.Remove(pet);
