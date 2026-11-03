@@ -1,8 +1,8 @@
 namespace PawHaven.Application.Exceptions;
 
 /// <summary>
-/// Thrown when user authentication fails (wrong email or password).
-/// This exception is caught by the exception handling middleware and mapped to a 401 Unauthorized response.
+/// Thrown when authentication fails (e.g., invalid credentials).
+/// Intended to be translated by the presentation layer into an appropriate error response.
 /// </summary>
 public class AuthenticationFailedException : Exception
 {
