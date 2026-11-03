@@ -12,8 +12,9 @@ public interface IUserRepository
     /// Finds a user by their email address.
     /// </summary>
     /// <param name="email">The email to search for.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The User if found; otherwise, null.</returns>
-    Task<User?> FindByEmailAsync(string email);
+    Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Finds a user by their unique identifier.
