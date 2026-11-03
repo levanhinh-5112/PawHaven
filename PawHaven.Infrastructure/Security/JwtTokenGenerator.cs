@@ -13,8 +13,9 @@ internal class JwtTokenGenerator : IJwtTokenGenerator
     {
         // TODO: PAW-35 - Implement real JWT token generation using System.IdentityModel.Tokens.Jwt
         // For now, return placeholder token and expiry
-        var expiryTimeUtc = DateTime.UtcNow.AddHours(1);
-        var placeholderToken = $"PLACEHOLDER_TOKEN_{user.Id}_{DateTime.UtcNow.Ticks}";
+        var nowUtc = DateTime.UtcNow;
+        var expiryTimeUtc = nowUtc.AddHours(1);
+        var placeholderToken = $"PLACEHOLDER_TOKEN_{Guid.NewGuid():N}";
 
         return (placeholderToken, expiryTimeUtc);
     }
