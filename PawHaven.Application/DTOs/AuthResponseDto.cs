@@ -21,5 +21,5 @@ public class AuthResponseDto
     /// <summary>
     /// Gets a summary of the authenticated user (id, email, name, role).
     /// </summary>
-    public UserSummaryDto User { get; init; } = null!;
+    public required UserSummaryDto User { get; init; }
 }
