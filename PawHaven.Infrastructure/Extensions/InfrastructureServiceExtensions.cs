@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PawHaven.Application.Abstractions;
 using PawHaven.Infrastructure.Persistence;
 using PawHaven.Infrastructure.Repositories;
+using PawHaven.Infrastructure.Security;
 using PawHaven.Infrastructure.UnitOfWork;
 
 namespace PawHaven.Infrastructure.Extensions;
@@ -34,8 +35,15 @@ public static class InfrastructureServiceExtensions
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
 
+        // Pet-related repositories
         services.AddScoped<IPetRepository, PetRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+
+        // Auth-related services (PAW-34 handlers require these)
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
         return services;
     }
 }
